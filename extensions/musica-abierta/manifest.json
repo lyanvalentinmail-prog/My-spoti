@@ -1,0 +1,68 @@
+{
+  "id": "io.github.lyanvalentinmail_prog.musicaabierta",
+  "name": "Open Music Downloads",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 1,
+  "author": "lyanvalentinmail-prog",
+  "description": "Downloads matching Creative Commons and public-domain recordings from Internet Archive into Orpheon's encrypted offline library.",
+  "homepage": "https://github.com/lyanvalentinmail-prog/My-spoti",
+  "main": "main.js",
+  "icon": "icon.png",
+  "category": "tools",
+  "tags": [
+    "downloads",
+    "offline",
+    "open music",
+    "creative commons",
+    "internet archive"
+  ],
+  "minAppVersion": "1.0.0-beta.1",
+  "changelog": "First release: licence filtering, strict metadata and duration matching, FLAC/MP3/M4A selection, and safe Internet Archive downloads.",
+  "welcome": {
+    "message": "Open Music Downloads only offers recordings that Internet Archive marks with a Creative Commons or public-domain licence. Availability is limited: most commercial songs are not openly licensed and will not be found.",
+    "steps": [
+      "Use Orpheon's normal download button on a song, album or playlist.",
+      "Orpheon validates the duration, encrypts the accepted file and keeps it inside its offline library.",
+      "Check the recording's licence on Internet Archive before using it outside private listening."
+    ]
+  },
+  "actions": [
+    {
+      "name": "download.source",
+      "why": "Offers matching openly licensed recordings for encrypted offline storage"
+    },
+    {
+      "name": "network",
+      "hosts": [
+        "archive.org"
+      ],
+      "why": "Searches Internet Archive and checks each recording's licence and metadata"
+    }
+  ],
+  "media": {
+    "hosts": [
+      "archive.org",
+      "*.archive.org"
+    ]
+  },
+  "translations": {
+    "es": {
+      "name": "Música Abierta",
+      "description": "Descarga grabaciones coincidentes con licencia Creative Commons o de dominio público desde Internet Archive a la biblioteca offline cifrada de Orpheon.",
+      "changelog": "Primera versión: filtro de licencias, coincidencia estricta de metadatos y duración, selección FLAC/MP3/M4A y descargas seguras desde Internet Archive.",
+      "welcome": {
+        "message": "Música Abierta solo ofrece grabaciones que Internet Archive marca con licencia Creative Commons o de dominio público. La disponibilidad es limitada: la mayoría de las canciones comerciales no tienen licencia abierta y no aparecerán.",
+        "steps": [
+          "Usa el botón normal de descarga de Orpheon en una canción, álbum o playlist.",
+          "Orpheon valida la duración, cifra el archivo aceptado y lo guarda dentro de su biblioteca offline.",
+          "Consulta la licencia en Internet Archive antes de usar la grabación fuera de la escucha privada."
+        ]
+      },
+      "actions": {
+        "download.source": "Ofrece grabaciones con licencia abierta para guardarlas offline cifradas",
+        "network": "Busca en Internet Archive y comprueba la licencia y los metadatos"
+      }
+    }
+  }
+}
