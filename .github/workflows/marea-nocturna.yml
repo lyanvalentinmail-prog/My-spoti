@@ -26,8 +26,8 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Validate and build Marea Nocturna
@@ -36,7 +36,7 @@ jobs:
           python3 scripts/build_extensions.py --extension marea-nocturna
           python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Upload independently installable ZIP
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: marea-nocturna-extension
           path: packages/io.github.lyanvalentinmail_prog.mareanocturna-*.zip
@@ -50,13 +50,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Validate tag version
         shell: bash
         run: |
           version="$(python3 -c "import json; print(json.load(open('extensions/marea-nocturna/manifest.json'))['version'])")"
           test "$GITHUB_REF_NAME" = "marea-nocturna-v$version"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: marea-nocturna-extension
           path: release-assets
