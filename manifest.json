@@ -1,0 +1,73 @@
+{
+  "id": "io.github.lyanvalentinmail_prog.mareanocturna",
+  "name": "Marea Nocturna",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 1,
+  "author": "lyanvalentinmail-prog",
+  "description": "A calm ocean-dark look with turquoise accents, cleaner players and readable text.",
+  "homepage": "https://github.com/lyanvalentinmail-prog/My-spoti",
+  "main": "main.js",
+  "icon": "icon.png",
+  "category": "look",
+  "tags": [
+    "dark",
+    "ocean",
+    "minimal",
+    "accessible"
+  ],
+  "minAppVersion": "1.0.0-beta.1",
+  "changelog": "First release: ocean palette, simplified player, centred Library tab and slightly larger text.",
+  "welcome": {
+    "message": "Marea Nocturna is active. It uses a deep navy background and turquoise accents, increases text slightly, moves Library to the centre in Classic mode, and hides two secondary player labels.",
+    "steps": [
+      "Turn it off in Settings → Extensions to restore Orpheon's original appearance.",
+      "Optional: enable AMOLED black in Settings → Display for a pure-black background."
+    ]
+  },
+  "actions": [
+    {
+      "name": "ui.style",
+      "why": "Ocean colours, cleaner players, larger text and Library in the centre"
+    }
+  ],
+  "ui": {
+    "colors": {
+      "accent": "#5EEAD4",
+      "background": "#06131F",
+      "surface": "#102A3D"
+    },
+    "hide": [
+      "player.source",
+      "player.capsule"
+    ],
+    "order": {
+      "nav": [
+        "home",
+        "library",
+        "search"
+      ]
+    },
+    "styles": {
+      "text": {
+        "scale": 1.04
+      }
+    }
+  },
+  "translations": {
+    "es": {
+      "description": "Un estilo oceánico oscuro con acentos turquesa, reproductores más limpios y texto legible.",
+      "changelog": "Primera versión: paleta oceánica, reproductor simplificado, Biblioteca al centro y texto ligeramente más grande.",
+      "welcome": {
+        "message": "Marea Nocturna está activa. Usa un fondo azul marino y acentos turquesa, aumenta un poco el texto, mueve Biblioteca al centro en el modo Clásico y oculta dos etiquetas secundarias del reproductor.",
+        "steps": [
+          "Desactívala en Ajustes → Extensiones para recuperar la apariencia original de Orpheon.",
+          "Opcional: activa Negro AMOLED en Ajustes → Pantalla si prefieres un fondo negro puro."
+        ]
+      },
+      "actions": {
+        "ui.style": "Colores oceánicos, reproductor limpio, texto mayor y Biblioteca al centro"
+      }
+    }
+  }
+}
