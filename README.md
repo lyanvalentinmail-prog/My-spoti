@@ -1,80 +1,65 @@
-# Marea Nocturna para Orpheon
+# Extensiones de Orpheon
 
-Una extensión visual importable para [Orpheon](https://github.com/kota-zo/Orpheon). Aplica un estilo oscuro inspirado en el océano sin acceder a la red, la cuenta de Spotify ni los datos del usuario.
+Este repositorio contiene **dos extensiones independientes** para [Orpheon](https://github.com/kota-zo/Orpheon). Cada una tiene su propio manifiesto, código, icono, paquete ZIP, workflow y página de GitHub Release. Puedes instalar una sin instalar la otra.
 
-## Qué cambia
+## Extensiones
 
-- Fondo azul marino (`#06131F`) y superficies azul profundo (`#102A3D`).
-- Acento turquesa (`#5EEAD4`) para controles, enlaces y selección.
-- Texto un 4 % más grande para mejorar la lectura.
-- En el modo **Clásico**, ordena las pestañas como Inicio, Biblioteca y Buscar.
-- Oculta la línea secundaria de fuente del reproductor Clásico y la cápsula inferior del reproductor Inmersivo. Sus funciones siguen disponibles desde el menú del reproductor.
-- Incluye textos en español e inglés.
+### 🌊 Marea Nocturna
 
-La opción **Negro AMOLED** de Orpheon sigue teniendo prioridad sobre el fondo de la extensión.
+Tema oscuro oceánico con acentos turquesa, reproductores más limpios y texto ligeramente mayor. No usa red ni accede a datos.
 
-## Instalar en Orpheon
+- Fuente: [`extensions/marea-nocturna`](extensions/marea-nocturna)
+- Release: [Marea Nocturna 1.0.0](https://github.com/lyanvalentinmail-prog/My-spoti/releases/tag/marea-nocturna-v1.0.0)
+- ZIP: [`io.github.lyanvalentinmail_prog.mareanocturna-1.0.0.zip`](https://github.com/lyanvalentinmail-prog/My-spoti/releases/download/marea-nocturna-v1.0.0/io.github.lyanvalentinmail_prog.mareanocturna-1.0.0.zip)
 
-1. Descarga [`io.github.lyanvalentinmail_prog.mareanocturna-1.0.0.zip`](packages/io.github.lyanvalentinmail_prog.mareanocturna-1.0.0.zip).
-2. Abre Orpheon y entra en **Ajustes → Extensiones**.
-3. Elige **Instalar desde un archivo** y selecciona el ZIP.
-4. Revisa el único permiso mostrado: **Cambiar la apariencia** (`ui.style`).
-5. Acepta la advertencia de extensión de terceros y pulsa **Instalar**.
+### 📥 Música Abierta
 
-Requiere Orpheon `1.0.0-beta.1` o posterior y la versión 1 de su API de extensiones. Para recuperar la apariencia original, desactiva o desinstala **Marea Nocturna** desde **Ajustes → Extensiones → Instaladas → Páginas y más**.
+Fuente de descarga que busca grabaciones coincidentes con licencia Creative Commons o de dominio público en Internet Archive. Orpheon valida, cifra y guarda el archivo dentro de su biblioteca offline.
 
-> Importa el archivo `.zip` directamente. No lo descomprimas y no intentes instalarlo como APK.
+- **No descarga audio de Spotify ni evita DRM.**
+- La mayoría de las canciones comerciales no están disponibles con licencia abierta.
+- Fuente: [`extensions/musica-abierta`](extensions/musica-abierta)
+- Release: [Música Abierta 1.0.0](https://github.com/lyanvalentinmail-prog/My-spoti/releases/tag/musica-abierta-v1.0.0)
+- ZIP: [`io.github.lyanvalentinmail_prog.musicaabierta-1.0.0.zip`](https://github.com/lyanvalentinmail-prog/My-spoti/releases/download/musica-abierta-v1.0.0/io.github.lyanvalentinmail_prog.musicaabierta-1.0.0.zip)
 
-## Privacidad y seguridad
+## Instalarlas por separado
 
-El paquete solicita solamente `ui.style`. `main.js` no ejecuta lógica: la apariencia está declarada en `manifest.json` y Orpheon la aplica con sus propios componentes. La extensión:
+Para cada extensión que quieras usar:
 
-- no solicita acceso de red;
-- no lee ni modifica la biblioteca o la cuenta de Spotify;
-- no guarda datos;
-- no reproduce ni descarga audio;
-- no carga código remoto.
+1. Descarga **solo su ZIP** desde la release correspondiente. No necesitas descargar el repositorio.
+2. No descomprimas el archivo.
+3. Abre **Orpheon → Ajustes → Extensiones → Instalar desde un archivo**.
+4. Selecciona el ZIP y revisa las acciones solicitadas.
+5. Confirma la instalación de terceros.
 
-## Verificar y construir
+Los dos ZIP tienen identificadores distintos, por lo que pueden estar instalados a la vez y se activan, desactivan o desinstalan por separado.
 
-Solo requiere Python 3.9 o posterior:
+## Construcción y pruebas
+
+Requisitos locales: Python 3.9+ y Node.js 20+; no hay dependencias que instalar.
 
 ```bash
 make test
 ```
 
-Ese comando valida el manifiesto y el icono, crea un ZIP determinista, comprueba su contenido y confirma que el paquete versionado coincide byte por byte con una compilación nueva.
-
-Comandos individuales:
+Comandos por extensión:
 
 ```bash
-make check   # valida los archivos fuente
-make build   # genera packages/<id>-<versión>.zip
-sha256sum packages/*.zip
+python3 scripts/build_extensions.py --extension marea-nocturna
+python3 scripts/build_extensions.py --extension musica-abierta
 ```
 
-Para volver a renderizar `icon.png`, instala ImageMagick y ejecuta:
+Los paquetes reproducibles se escriben en `packages/`. Cada ZIP contiene únicamente los archivos que permite Orpheon en su raíz: `manifest.json`, `main.js`, `icon.png`, `LICENSE` y `README.md`.
 
-```bash
-make icon
-```
+## Workflows y Releases
 
-`assets/icon.svg` conserva la versión vectorial editable de referencia; el renderizador usa primitivas propias de ImageMagick para no depender de un conversor SVG externo.
+Los workflows son independientes:
 
-## Estructura
+- **Marea Nocturna** construye y publica etiquetas `marea-nocturna-v*`.
+- **Música Abierta** construye y publica etiquetas `musica-abierta-v*`.
 
-```text
-manifest.json              metadatos, traducciones y estilo declarado
-main.js                    script vacío requerido por el formato
-icon.png                   icono incluido en el paquete
-assets/icon.svg            fuente editable del icono
-scripts/build_extension.py validador y empaquetador determinista
-tests/test_extension.py    pruebas del manifiesto y del ZIP
-packages/*.zip             paquete listo para importar
-```
-
-El ZIP contiene solamente los archivos permitidos por Orpheon en la raíz: `manifest.json`, `main.js`, `icon.png`, `LICENSE` y `README.md`.
+En cada ejecución se puede descargar únicamente el artefacto ZIP de esa extensión. Al crear su etiqueta, el workflow valida que la versión de la etiqueta coincida con `manifest.json` y adjunta el ZIP a una release separada.
 
 ## Licencia
 
-Código y recursos de esta extensión bajo la [licencia MIT](LICENSE). Orpheon es un proyecto independiente bajo GPL-3.0; esta extensión no está afiliada ni avalada por Orpheon o Spotify.
+Las extensiones y herramientas de este repositorio se publican bajo [MIT](LICENSE). Los audios encontrados por Música Abierta pertenecen a sus autores y mantienen la licencia indicada en Internet Archive. Orpheon y Spotify son proyectos y marcas independientes; este repositorio no está afiliado ni avalado por ellos.

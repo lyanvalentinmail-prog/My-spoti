@@ -1,0 +1,75 @@
+name: Marea Nocturna
+
+on:
+  push:
+    branches: [main]
+    tags: ["marea-nocturna-v*"]
+    paths:
+      - "extensions/marea-nocturna/**"
+      - "scripts/build_extensions.py"
+      - "tests/test_packages.py"
+      - "Makefile"
+      - ".github/workflows/marea-nocturna.yml"
+  pull_request:
+    paths:
+      - "extensions/marea-nocturna/**"
+      - "scripts/build_extensions.py"
+      - "tests/test_packages.py"
+      - "Makefile"
+      - ".github/workflows/marea-nocturna.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate and build Marea Nocturna
+        run: |
+          python3 scripts/build_extensions.py --check --extension marea-nocturna
+          python3 scripts/build_extensions.py --extension marea-nocturna
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Upload independently installable ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: marea-nocturna-extension
+          path: packages/io.github.lyanvalentinmail_prog.mareanocturna-*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/marea-nocturna-v')
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate tag version
+        shell: bash
+        run: |
+          version="$(python3 -c "import json; print(json.load(open('extensions/marea-nocturna/manifest.json'))['version'])")"
+          test "$GITHUB_REF_NAME" = "marea-nocturna-v$version"
+      - uses: actions/download-artifact@v4
+        with:
+          name: marea-nocturna-extension
+          path: release-assets
+      - name: Create or update the separate release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          asset="$(find release-assets -maxdepth 1 -name '*.zip' -print -quit)"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" --verify-tag \
+              --title "Marea Nocturna ${GITHUB_REF_NAME#marea-nocturna-v}" \
+              --notes "Tema visual oscuro e independiente para Orpheon. Descarga el ZIP y usa Ajustes → Extensiones → Instalar desde un archivo."
+          fi

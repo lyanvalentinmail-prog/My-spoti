@@ -1,0 +1,82 @@
+name: Música Abierta
+
+on:
+  push:
+    branches: [main]
+    tags: ["musica-abierta-v*"]
+    paths:
+      - "extensions/musica-abierta/**"
+      - "scripts/build_extensions.py"
+      - "tests/test_packages.py"
+      - "tests/musica_abierta.test.js"
+      - "Makefile"
+      - ".github/workflows/musica-abierta.yml"
+  pull_request:
+    paths:
+      - "extensions/musica-abierta/**"
+      - "scripts/build_extensions.py"
+      - "tests/test_packages.py"
+      - "tests/musica_abierta.test.js"
+      - "Makefile"
+      - ".github/workflows/musica-abierta.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate and build Música Abierta
+        run: |
+          python3 scripts/build_extensions.py --check --extension musica-abierta
+          python3 scripts/build_extensions.py --extension musica-abierta
+          python3 -m unittest discover -s tests -p 'test_*.py' -v
+          node --check extensions/musica-abierta/main.js
+          node --test tests/musica_abierta.test.js
+      - name: Upload independently installable ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: musica-abierta-extension
+          path: packages/io.github.lyanvalentinmail_prog.musicaabierta-*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/musica-abierta-v')
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate tag version
+        shell: bash
+        run: |
+          version="$(python3 -c "import json; print(json.load(open('extensions/musica-abierta/manifest.json'))['version'])")"
+          test "$GITHUB_REF_NAME" = "musica-abierta-v$version"
+      - uses: actions/download-artifact@v4
+        with:
+          name: musica-abierta-extension
+          path: release-assets
+      - name: Create or update the separate release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          asset="$(find release-assets -maxdepth 1 -name '*.zip' -print -quit)"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" --verify-tag \
+              --title "Música Abierta ${GITHUB_REF_NAME#musica-abierta-v}" \
+              --notes "Fuente independiente de descargas Creative Commons y de dominio público para Orpheon. No descarga audio de Spotify."
+          fi
